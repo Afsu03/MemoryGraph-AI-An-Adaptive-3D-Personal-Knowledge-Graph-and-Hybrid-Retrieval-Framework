@@ -1,0 +1,31 @@
+\section{Introduction}
+\label{sec:intro}
+
+\IEEEPARstart{T}{he} exponential growth of digital information in modern academic and professional workflows has exacerbated the problem of personal knowledge fragmentation. Modern researchers and knowledge workers generate and accumulate thousands of notes, research papers, project plans, and code snippets across disparate tools~\cite{bush1945think, ahrens2017smartnotes}. While Personal Knowledge Management (PKM) paradigms (e.g., Zettelkasten) encourage non-linear associative thinking via bi-directional hyperlinking, digital implementations quickly collapse under cognitive overload when the note corpus exceeds several hundred nodes. In practice, 2D force-directed visualizations degenerate into dense, uninterpretable ``hairballs,'' and users revert to fragile manual folder hierarchies or basic keyword search.
+
+Concurrently, Retrieval-Augmented Generation (RAG)~\cite{lewis2020rag, karpukhin2020dpr} has emerged as the standard paradigm for grounding Large Language Models (LLMs) in external knowledge. However, standard dense vector RAG exhibits two fundamental theoretical deficiencies when applied to personal knowledge archives:
+\begin{enumerate}
+    \item \textbf{Structural and Multi-Hop Blindness:} Embedding chunks in isolation strips hierarchical document context and explicit relational semantics. Queries requiring multi-step conceptual deduction (e.g., tracing prerequisite dependency chains across disparate learning modules) fail because standard inner-product retrieval retrieves top-$k$ disjoint snippets rather than connected reasoning paths~\cite{edge2024graphrag, gutierrez2024hipporag}.
+    \item \textbf{Temporal Invariance and Memory Agnosticism:} Conventional retrieval mechanisms treat all indexed documents with equal temporal relevance. In contrast to biological cognitive architectures~\cite{anderson2004actr, ebbinghaus1885memory}, where memories undergo power-law decay unless reinforced through spaced recall, standard RAG retrieves stale, superseded notes with identical probability to actively reinforced working knowledge.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.92\columnwidth}{\centering \textbf{[Figure 1: High-Level Overview of MemoryGraph-AI]}\\ \small Ingestion $\to$ LLM Extraction $\to$ Dual-Store KG $\to$ Temporal Decay Engine $\to$ 3D UMAP Manifold Spatialization $\to$ Hybrid RRF Retrieval.}}
+\caption{End-to-end operational pipeline of MemoryGraph-AI.}
+\label{fig:overview}
+\end{figure}
+
+To address these limitations, we present \textbf{MemoryGraph-AI}, an integrated framework that automatically converts unstructured personal repositories into an adaptive, dynamic 3D personal knowledge graph. MemoryGraph-AI combines real-time LLM-based entity-relation extraction, a biologically grounded memory-decay model, high-dimensional 3D manifold projection, and a 4-channel hybrid retrieval engine.
+
+\subsection{Core Contributions}
+The main contributions of this work are summarized as follows:
+\begin{itemize}
+    \item \textbf{Temporal Cognitive Activation Model:} We formulate an ACT-R and FSRS-inspired dynamic activation function $\mathcal{A}(n, t)$ that updates memory stability and retrievability upon user access events, naturally prioritizing active concepts while gracefully fading stale knowledge.
+    \item \textbf{Topology-Constrained 3D Spatial Manifold:} We propose a hybrid dimensionality reduction loss combining parametric UMAP cross-entropy with graph topological spring forces, producing a semantically meaningful, clutter-free 3D Euclidean representation ($\mathbb{R}^3$) for immersive WebGL navigation.
+    \item \textbf{Adaptive Hybrid Retrieval Engine:} We design a multi-stage retrieval pipeline fusing dense vector search, BM25 lexical matching, Personalized PageRank (PPR) graph neighborhood expansion, and temporal decay gating using Weighted Reciprocal Rank Fusion (RRF).
+    \item \textbf{Automated Prerequisite DAG Learning Synthesis:} We develop an algorithm for inducing directed acyclic concept graphs that automatically extracts structured learning paths and identifies knowledge gaps from unstructured personal notes.
+    \item \textbf{Extensive Empirical Validation:} We conduct comprehensive evaluations across academic curriculum corpora, research papers, and longitudinal personal notes, demonstrating significant improvements in retrieval MRR ($+18.4\%$), generation faithfulness ($+22.1\%$), and cognitive task efficiency.
+\end{itemize}
+
+The remainder of this paper is structured as follows. Section~\ref{sec:related_work} reviews related work. Section~\ref{sec:architecture} presents the system architecture. Section~\ref{sec:methodology} formalizes our mathematical methodology. Section~\ref{sec:experiments} outlines experimental design, followed by results in Section~\ref{sec:results}, discussion in Section~\ref{sec:discussion}, and conclusions in Section~\ref{sec:conclusion}.

@@ -1,0 +1,36 @@
+\section{Related Work}
+\label{sec:related_work}
+
+We position MemoryGraph-AI at the intersection of four established domains: Graph-Augmented RAG, Personal Knowledge Management, Cognitive Memory Decay, and 3D Information Visualization.
+
+\subsection{Graph-Augmented Retrieval-Augmented Generation}
+While Dense Passage Retrieval (DPR)~\cite{karpukhin2020dpr} and standard vector RAG~\cite{lewis2020rag} represent foundational milestones in open-domain question answering, their inability to perform multi-hop graph reasoning over interconnected entities has catalyzed graph-augmented RAG research. Microsoft GraphRAG~\cite{edge2024graphrag} leverages LLMs to construct entity-relation knowledge graphs from document collections, partitioning the graph into hierarchical communities via the Leiden algorithm and synthesizing global summaries. However, GraphRAG is computationally expensive to re-index, making it ill-suited for personal knowledge bases undergoing continuous edits. HippoRAG~\cite{gutierrez2024hipporag} draws inspiration from human hippocampal memory indexing, employing Personalized PageRank over LLM-extracted knowledge graphs to achieve rapid multi-hop pattern completion. MemoryGraph-AI extends this lineage by integrating continuous incremental extraction with temporal cognitive decay and 3D spatial anchors.
+
+\subsection{Personal Knowledge Management (PKM) \& Graph Construction}
+Modern PKM systems (e.g., Obsidian, Roam Research) rely on bi-directional linking (`[[wiki-links]]') rooted in the Zettelkasten philosophy~\cite{ahrens2017smartnotes}. Automatic Knowledge Graph Construction (AKGC) has progressed from rule-based OpenIE pipelines to foundation LLM extraction~\cite{wang2023llmkg} and generalist NER frameworks like GLiNER~\cite{zaratiana2023gliner}. Despite these advances, existing PKM tools treat all links as unweighted, undirected associations and lack automated disambiguation and prerequisite induction mechanisms.
+
+\subsection{Cognitive Memory Models \& Spaced Repetition}
+Cognitive psychology has long modeled memory decay and reinforcement dynamics. Ebbinghaus~\cite{ebbinghaus1885memory} established the exponential forgetting curve. The ACT-R cognitive architecture~\cite{anderson2004actr} formalizes base-level declarative memory activation as a power-law accumulation of past retrieval timestamps. Recent algorithmic breakthroughs such as the Free Spaced Repetition Scheduler (FSRS-4.5)~\cite{ye2023fsrs} formulate memory stability and retrievability as a stochastic shortest-path problem. While agentic memory systems like MemGPT~\cite{packer2023memgpt} implement tier-based OS context paging, they lack mathematical forgetting dynamics over explicit graph topology. MemoryGraph-AI introduces continuous ACT-R/FSRS activation updates into personal knowledge graph retrieval.
+
+\subsection{High-Dimensional Manifold Learning \& 3D Visualization}
+Visualizing complex knowledge bases requires dimensionality reduction. While t-SNE preserves local neighborhoods, Uniform Manifold Approximation and Projection (UMAP)~\cite{mcinnes2018umap} and its parametric deep-learning extension~\cite{sainburg2021parametric} preserve both local clusters and global Riemannian topological manifolds with fast out-of-sample inference. Standard force-directed algorithms (e.g., ForceAtlas2~\cite{jacomy2014forceatlas2}) frequently entangle when scaling to thousands of nodes. MemoryGraph-AI resolves this by formulating a joint optimization loss bridging parametric UMAP embeddings with topological graph spring relaxation in $\mathbb{R}^3$.
+
+\begin{table*}[t]
+\centering
+\caption{Systematic Comparison of MemoryGraph-AI Against Related Retrieval and PKM Paradigms}
+\label{tab:taxonomy}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Feature / Capability} & \textbf{Traditional PKM} & \textbf{Dense Vector RAG} & \textbf{Microsoft GraphRAG} & \textbf{HippoRAG} & \textbf{MemGPT / Zep} & \textbf{MemoryGraph-AI (Ours)} \\
+\midrule
+Topology Representation & Manual 2D Links & Disconnected Vectors & Leiden Communities & OpenIE KG Adjacency & Flat Relational + Vector & \textbf{Typed Hierarchical Dual-Store KG} \\
+Multi-Hop Reasoning & Manual Visual Search & Ineffective & High (Community Summaries) & High (PageRank) & Moderate (Paging) & \textbf{High (Multi-hop PPR + Edge Traversal)} \\
+Cognitive Memory Decay & None & None & None & None & Basic LRU/FIFO & \textbf{ACT-R / FSRS Activation $\mathcal{A}(n, t)$} \\
+Spatial Dimensionality & 2D Force (Hairball) & None & None & None & None & \textbf{3D Parametric UMAP + Spring Manifold} \\
+Learning Path Synthesis & Manual & None & None & None & None & \textbf{Automated Prerequisite DAG Extraction} \\
+Real-Time Incremental Updates & Instant & Fast (Vector Append) & Prohibitive (Batch Reindex) & Moderate & Fast & \textbf{Real-Time Incremental Dynamic Projection} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

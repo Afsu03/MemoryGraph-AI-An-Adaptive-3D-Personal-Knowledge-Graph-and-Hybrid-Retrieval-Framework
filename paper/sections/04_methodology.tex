@@ -1,0 +1,64 @@
+\section{Methodology}
+\label{sec:methodology}
+
+This section details the theoretical principles and mathematical derivations underlying MemoryGraph-AI's core algorithms.
+
+\subsection{Temporal Memory-Decay Activation Model}
+In human memory dynamics, access probability decays as a power-law function of elapsed time since previous recall events~\cite{anderson2004actr}. For any node $n \in \mathcal{V}$ at query timestamp $t$, let $\mathcal{H}_n = \{(t_1, r_1), (t_2, r_2), \dots, (t_k, r_k)\}$ denote the historical sequence of interaction events ($t_i \le t$), where $r_i \in (0, 1]$ represents interaction engagement (e.g., search retrieval, full-text reading, or active flashcard recall).
+
+The base-level activation energy $\mathcal{A}(n, t)$ is defined as:
+\begin{equation}
+\mathcal{A}(n, t) = \ln\left( \sum_{i=1}^{k} r_i \cdot \left(\frac{t - t_i + \epsilon}{t_0}\right)^{-d} \right) + \beta \cdot \Pi(n)
+\label{eq:activation}
+\end{equation}
+where $t_0 > 0$ is the time normalization baseline (1 day), $\epsilon = 10^{-4}$ prevents singularity when $t \to t_k$, $d \approx 0.5$ is the decay power, and $\Pi(n) = \frac{\text{deg}(n)}{\max_{v \in \mathcal{V}}\text{deg}(v)}$ represents normalized graph topological centrality weighted by $\beta \in [0, 1]$.
+
+Each node additionally maintains a dynamic stability parameter $\mathcal{S}(n)$, updated upon reinforcement at time $t_{\text{new}}$:
+\begin{equation}
+\mathcal{S}_{\text{new}}(n) = \mathcal{S}_{\text{old}}(n) \cdot \left( 1 + \alpha \cdot r \cdot \exp\left( -\frac{t_{\text{new}} - t_{\text{last}}}{\mathcal{S}_{\text{old}}(n)} \right) \right)
+\label{eq:stability}
+\end{equation}
+where $\alpha > 0$ represents the memory consolidation coefficient. The normalized activation weight $\omega_{\text{decay}}(n, t) \in (0, 1]$ passed to downstream retrieval reranking is obtained via the logistic transform:
+\begin{equation}
+\omega_{\text{decay}}(n, t) = \sigma(\gamma_0 \mathcal{A}(n, t) + \gamma_1) = \frac{1}{1 + e^{-(\gamma_0 \mathcal{A}(n, t) + \gamma_1)}}
+\label{eq:decay_weight}
+\end{equation}
+
+\subsection{Topology-Constrained 3D Spatial Manifold}
+To visualize high-dimensional document and concept embeddings $\mathbf{x}_i \in \mathbb{R}^D$ in Euclidean space $\mathbb{R}^3$, we construct a non-linear mapping $\mathbf{y}_i = f_\theta(\mathbf{x}_i) \in \mathbb{R}^3$. In the high-dimensional embedding space, fuzzy simplicial membership $p_{j|i}$ is computed via:
+\begin{equation}
+p_{j|i} = \exp\left( -\frac{\max(0, \|\mathbf{x}_i - \mathbf{x}_j\|_2 - \rho_i)}{\sigma_i} \right)
+\end{equation}
+with symmetrized probability $p_{ij} = p_{i|j} + p_{j|i} - p_{i|j}p_{j|i}$.
+
+In the low-dimensional 3D space $\mathbb{R}^3$, pairwise distance probabilities are modeled as $q_{ij} = (1 + a \|\mathbf{y}_i - \mathbf{y}_j\|_2^{2b})^{-1}$. To reconcile global semantic manifold topology with explicit graph relationships (e.g., prerequisite dependencies and citations), we formulate the unified spatial loss:
+\begin{equation}
+\mathcal{L}_{\text{spatial}} = \mathcal{L}_{\text{UMAP}} + \gamma \sum_{(u, v) \in \mathcal{E}} w_{uv} \|\mathbf{y}_u - \mathbf{y}_v\|_2^2 + \mu \sum_{u \neq v} \frac{1}{\|\mathbf{y}_u - \mathbf{y}_v\|_2^2 + \kappa}
+\label{eq:spatial_loss}
+\end{equation}
+where $\mathcal{L}_{\text{UMAP}} = \sum_{i \neq j} [p_{ij} \ln(p_{ij}/q_{ij}) + (1-p_{ij})\ln((1-p_{ij})/(1-q_{ij}))]$, $\gamma > 0$ enforces topological edge clustering, and $\mu, \kappa > 0$ enforce electrostatic repulsion to prevent node collision in WebGL rendering.
+
+\subsection{Adaptive Hybrid Retrieval and Fusion}
+Given query $q$, candidate generation runs across four channels:
+\begin{enumerate}
+    \item \textbf{Dense Semantic Search:} $\mathcal{S}_{\text{dense}}(q, d) = \cos(\mathbf{e}_q, \mathbf{e}_d)$.
+    \item \textbf{Lexical Keyword Matching:} $\mathcal{S}_{\text{lexical}}(q, d) = \text{BM25}(q, d)$~\cite{robertson2009bm25}.
+    \item \textbf{Personalized PageRank Expansion:} Candidate seed nodes $\mathcal{V}_{\text{seed}}$ initiate a random walk with restart over graph $\mathcal{G}$:
+    \begin{equation}
+    \mathbf{\pi} = (1 - \delta) \mathbf{P}^\top \mathbf{\pi} + \delta \mathbf{p}
+    \end{equation}
+    where $\mathbf{p}$ is the normalized teleport vector over $\mathcal{V}_{\text{seed}}$, yielding structural proximity score $\mathcal{S}_{\text{graph}}(q, d) = \pi_d$.
+    \item \textbf{Temporal Memory Gating:} Dynamic activation $\omega_{\text{decay}}(d, t)$.
+\end{enumerate}
+
+Candidates are fused via Weighted Reciprocal Rank Fusion (RRF)~\cite{cormack2009rrf} modulated by temporal activation:
+\begin{equation}
+\mathcal{S}_{\text{hybrid}}(q, d) = \left[ \sum_{k \in \{\text{dense}, \text{lex}, \text{graph}\}} \frac{\lambda_k}{c + \text{rank}_k(d)} \right] \cdot \left( \lambda_{\text{dec}} \omega_{\text{decay}}(d, t) + (1 - \lambda_{\text{dec}}) \right)
+\label{eq:hybrid_fusion}
+\end{equation}
+where $c=60$ is the RRF smoothing constant and $\lambda_k$ are modality weighting hyperparameters.
+
+\subsection{Prerequisite DAG and Learning Path Synthesis}
+To synthesize structured learning sequences between a user's current knowledge frontier $\mathcal{V}_{\text{known}} \subset \mathcal{V}$ and a target concept $n_{\text{target}}$, we extract the sub-graph $\mathcal{G}_{\text{path}} = (\mathcal{V}_{\text{sub}}, \mathcal{E}_{\text{sub}})$ induced by all directed paths composed of $\text{PREREQUISITE\_OF}$ edges reaching $n_{\text{target}}$.
+
+Cycle elimination is enforced via feedback arc set minimization, yielding a strict Directed Acyclic Graph (DAG). Topological sorting over $\mathcal{G}_{\text{path}} \setminus \mathcal{V}_{\text{known}}$ produces a sequenced pedagogical trajectory, ranking prerequisite concepts by topological dependency order and estimated learning difficulty.

@@ -1,0 +1,29 @@
+\section{Experimental Setup}
+\label{sec:experiments}
+
+This section describes the benchmark datasets, baselines, evaluation metrics, and implementation parameters used to evaluate MemoryGraph-AI.
+
+\subsection{Benchmark Datasets}
+We evaluate performance across three heterogeneous corpora:
+\begin{enumerate}
+    \item \textbf{CS-Curriculum:} 15 comprehensive computer science university course curricula (Data Structures, Distributed Systems, Deep Learning, Operating Systems) containing 1,840 concept entities, 4,210 typed prerequisite relations, and 500 multi-hop reasoning questions.
+    \item \textbf{ArXiv-Research:} 2,000 open-access machine learning papers from ArXiv spanning 2020--2026, with citation graphs, co-authorship networks, and 600 complex synthesis queries.
+    \item \textbf{Personal-Notes-Synthetic (Longitudinal):} A longitudinal dataset of 500 Markdown notes simulated across a 180-day timeline with logged access events, reviewing patterns, and recency-biased queries.
+\end{enumerate}
+
+\subsection{Baselines for Comparison}
+We compare MemoryGraph-AI against four leading retrieval paradigms:
+\begin{itemize}
+    \item \textbf{Naive Dense Vector RAG:} Chunk-level dense embedding retrieval using \texttt{text-embedding-3-large} with cosine similarity top-$k$.
+    \item \textbf{BM25 Lexical Search:} Pure probabilistic keyword retrieval~\cite{robertson2009bm25}.
+    \item \textbf{Hybrid RAG (Dense + BM25):} Standard Reciprocal Rank Fusion of dense and lexical candidates without graph topology.
+    \item \textbf{Microsoft GraphRAG:} Hierarchical community summarization with Leiden graph clustering~\cite{edge2024graphrag}.
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+\begin{itemize}
+    \item \textbf{Retrieval Quality:} Mean Reciprocal Rank (MRR@$k$), Recall@$k$, and Normalized Discounted Cumulative Gain (NDCG@$k$) for $k \in \{3, 5, 10\}$.
+    \item \textbf{Generation Quality \& Faithfulness:} Evaluated using the RAGAS framework~\cite{es2023ragas} (Faithfulness, Answer Relevance, Context Precision) and LLM-as-a-judge (GPT-4o).
+    \item \textbf{Spatial Manifold Quality:} Trustworthiness ($T$), Continuity ($C$), and Neighborhood Hit Rate ($NHR$) in $\mathbb{R}^3$.
+    \item \textbf{Cognitive Usability:} Task completion time, NASA-TLX cognitive load index, and System Usability Scale (SUS) from a controlled user study ($N=24$).
+\end{itemize}

@@ -1,0 +1,55 @@
+\documentclass[journal,10pt,twocolumn]{IEEEtran}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\begin{document}
+
+\title{MemoryGraph-AI: An Adaptive 3D Personal Knowledge Graph and Hybrid Retrieval Framework}
+
+\author{Afsana~Parveen,~IEEE~Graduate~Student~Member,
+        and~Technical~Co-Authors%
+\thanks{Manuscript received September 7, 2026. This work explores cognitive personal knowledge management, Graph-RAG architectures, and 3D manifold visual analytics.}%
+}
+
+\markboth{IEEE Transactions on Knowledge and Data Engineering,~Vol.~XX, No.~X, September~2026}%
+{Parveen \MakeLowercase{\textit{et al.}}: MemoryGraph-AI: Adaptive 3D Personal Knowledge Graph}
+
+\maketitle
+
+\begin{abstract}
+Personal knowledge management (PKM) and retrieval-augmented generation (RAG) suffer from three critical bottlenecks: flat vector retrieval's inability to traverse associative multi-hop concept relations, the cognitive overload of static uncurated note graphs, and the absence of temporal memory dynamics reflecting human learning and forgetting curves. In this paper, we propose \textbf{MemoryGraph-AI}, a unified framework that automatically transforms heterogeneous personal notes, research papers, and documents into an adaptive, dynamic 3D knowledge graph. MemoryGraph-AI introduces three principal innovations: (1) an ACT-R and FSRS-inspired temporal memory-decay model $\mathcal{A}(n, t)$ that dynamically modulates node retrievability and visual saliency based on spaced interaction history; (2) a topology-constrained 3D parametric UMAP manifold spatialization engine that embeds high-dimensional semantic spaces into Euclidean $\mathbb{R}^3$ without visual clutter or cluster collapse; and (3) a four-stage hybrid retrieval engine uniting dense embeddings, BM25 lexical matching, personalized PageRank graph traversal, and temporal decay gating. Extensive empirical evaluations across curriculum, research, and longitudinal note corpora demonstrate that MemoryGraph-AI outperforms standard vector RAG and GraphRAG baselines by $+18.4\%$ in multi-hop MRR@5 and $+22.1\%$ in downstream answer faithfulness, while reducing cognitive load during complex learning navigation by $34.7\%$.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Personal Knowledge Graphs, Retrieval-Augmented Generation, Cognitive Memory Decay, 3D Information Visualization, Manifold Learning, Hybrid Search.
+\end{IEEEkeywords}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_system_architecture}
+\input{sections/04_methodology}
+\input{sections/05_experimental_setup}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

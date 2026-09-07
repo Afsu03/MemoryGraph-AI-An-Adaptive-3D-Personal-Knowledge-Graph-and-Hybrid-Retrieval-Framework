@@ -1,0 +1,23 @@
+\section{System Architecture}
+\label{sec:architecture}
+
+MemoryGraph-AI is structured into a multi-tiered architecture that bridges asynchronous document processing, dual-store knowledge indexing, cognitive activation tracking, 3D manifold projection, and high-performance hybrid retrieval.
+
+\subsection{Architecture Overview}
+The system comprises six interconnected subsystems:
+\begin{enumerate}
+    \item \textbf{Ingestion and Hierarchical Chunking Pipeline:} Parses heterogeneous source files (Markdown, PDF, LaTeX, Code) into structured Abstract Syntax Trees (ASTs), preserving document section headers and parent-child chunk hierarchies.
+    \item \textbf{LLM Information Extraction and Incremental Entity Resolution:} Prompts instruction-tuned foundation models with structured schema constraints to extract canonical entities and typed relations, resolving synonymous mentions via a hybrid string-embedding clustering step.
+    \item \textbf{Dual-Store Storage Layer:} Maintains a heterogeneous property graph database (Neo4j / K\`uzuDB) for topological queries and an integrated vector index (Qdrant / FAISS) for dense semantic nearest-neighbor search.
+    \item \textbf{Temporal Cognitive Decay Engine:} An asynchronous background worker that logs user interaction telemetry, recalculates node activation states $\mathcal{A}(n, t)$, and updates memory stability parameters $\mathcal{S}(n)$.
+    \item \textbf{3D Semantic Spatialization Engine:} Continuously computes 3D Euclidean coordinates $(\mathbf{y} \in \mathbb{R}^3)$ for graph entities and documents by combining parametric UMAP projections with force-directed topological spring constraints.
+    \item \textbf{Adaptive Hybrid Retrieval Engine:} Executes four-channel candidate generation (Dense + Lexical + Graph PPR + Temporal Decay) and fuses candidates via Weighted Reciprocal Rank Fusion (RRF).
+\end{enumerate}
+
+\subsection{Heterogeneous Graph Data Model}
+We define the personal knowledge graph as a directed, attributed multi-graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, \mathcal{W})$, where:
+\begin{itemize}
+    \item \textbf{Node Set $\mathcal{V}$:} Composed of disjoint subsets $\mathcal{V} = \mathcal{V}_{\text{doc}} \cup \mathcal{V}_{\text{chunk}} \cup \mathcal{V}_{\text{entity}} \cup \mathcal{V}_{\text{topic}}$. Each node $n \in \mathcal{V}$ possesses properties: canonical identifier $\text{id}$, label $\text{name}$, dense embedding $\mathbf{e}_n \in \mathbb{R}^d$, 3D spatial coordinate $\mathbf{y}_n \in \mathbb{R}^3$, current activation energy $\mathcal{A}(n, t)$, stability $\mathcal{S}(n)$, and interaction history $\mathcal{H}_n$.
+    \item \textbf{Edge Set $\mathcal{E}$:} Directed edges $(u, v, \tau)$ categorized by type $\tau \in \{\text{\small CONTAINS}, \text{\small MENTIONS}, \text{\small RELATES\_TO}, \text{\small PREREQUISITE\_OF}, \text{\small EXTENDS}, \text{\small CITES}\}$.
+    \item \textbf{Weight Function $\mathcal{W}$:} Maps each edge to a confidence-topological strength weight $w_{uv} \in (0, 1]$.
+\end{itemize}
