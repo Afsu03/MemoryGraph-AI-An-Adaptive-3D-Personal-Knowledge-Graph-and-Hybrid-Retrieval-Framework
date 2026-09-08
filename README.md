@@ -501,12 +501,7 @@ Contributions are welcome! Please:
 
 ---
 
-## 💬 Questions & Support
-
-For questions, issues, or discussions:
-- Open a [GitHub Issue](https://github.com/Afsu03/MemoryGraph-AI-An-Adaptive-3D-Personal-Knowledge-Graph-and-Hybrid-Retrieval-Framework/issues)
-- Review the [research documentation](docs/research/)
-- Check the [research manuscript](paper/main.tex)
+## Testing Pair Extraordinaire badge.
 
 ---
 
